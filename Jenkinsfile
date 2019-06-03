@@ -5,8 +5,8 @@ pipeline {
 	stages {
         stage('Primer stage') {
             steps {
-				sh 'whoami'
-                
+			sh 'whoami'
+                	sh 'curl wttr.in'
             }
         }
 	}
