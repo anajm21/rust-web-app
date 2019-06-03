@@ -1,28 +1,18 @@
 pipeline {
 
-	agent{
-			docker{
-				image 'ubuntu:latest'
-			}
-		}
-
-	stages {
-        stage('check curl') {
-			when {branch 'master'}
-            steps {
-				sh 'apt-get update && apt-get install curl -y'
-				sh 'curl --version'
-                
-            }
-        }
-		
-		stage ('Tiempo'){
-		
-			steps{
-				sh 'apt-get update && apt-get install curl -y'
-				sh 'curl wttr.in'
-			}
-		}
+	environment{
+		REGISTRY = 	credentials('REGISTRY')
+		REGISTRY_HOST = '52.50.166.37'
 	
 	}
- }
+	
+	agent any
+	stages {
+		stage('Docker Registry Log in') {
+			steps {
+				sh 'docker login ${REGISTRY_HOST} \
+					-u ${REGISTRY_USR} -p ${REGISTRY_PSW}'
+			}
+		}
+	}	 
+}
