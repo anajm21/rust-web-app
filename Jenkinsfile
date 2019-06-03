@@ -7,9 +7,10 @@ pipeline {
 		}
 
 	stages {
-        stage('Primer stage') {
+        stage('check curl') {
+			when {branch 'master'}
             steps {
-				sh 'whoami'
+				sh 'curl --version'
                 
             }
         }
