@@ -2,7 +2,7 @@ pipeline {
 
 	environment{
 		REGISTRY = 	credentials('REGISTRY')
-		REGISTRY_HOST = 52.50.166.37
+		REGISTRY_HOST = '52.50.166.37'
 	
 	}
 	
