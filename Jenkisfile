@@ -1,6 +1,10 @@
 pipeline {
 
-	agent any
+	agent{
+			docker{
+				image 'ubunto:latest'
+			}
+		}
 
 	stages {
         stage('Primer stage') {
@@ -12,18 +16,11 @@ pipeline {
 		
 		stage ('Tiempo'){
 		
-		agent{
-			docker{
-				image 'ubunto:latest'
-			}
 			steps{
 				sh 'apt-get update && apt-get install curl -y'
 				sh 'curl wttr.in'
 			}
 		}
 	
-		}
-
-
 	}
  }
