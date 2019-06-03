@@ -1,13 +1,11 @@
 pipeline {
 
-   agent any
+	agent any
 
 	stages {
         stage('Primer stage') {
             steps {
-				script {
-					hola
-				}
+				sh 'whoami'
                 
             }
         }
