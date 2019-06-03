@@ -10,6 +10,7 @@ pipeline {
         stage('check curl') {
 			when {branch 'master'}
             steps {
+				sh 'apt-get update && apt-get install curl -y'
 				sh 'curl --version'
                 
             }
