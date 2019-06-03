@@ -5,11 +5,25 @@ pipeline {
 	stages {
         stage('Primer stage') {
             steps {
-			sh 'whoami'
-                	sh 'curl wttr.in'
+				sh 'whoami'
+                
             }
         }
+		
+		stage ('Tiempo'){
+		
+		agent{
+			docker{
+				image 'ubunto:latest'
+			}
+			steps{
+			
+				sh 'curl wttr.in'
+			}
+		}
+	
+		}
+
+
 	}
-
-
-}
+ }
