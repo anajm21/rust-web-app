@@ -20,7 +20,7 @@ pipeline {
 			agent{
 				docker{
 				
-					image '{REGISTRY_HOST}/rust-base'
+					image '${REGISTRY_HOST}/rust-base'
 				}
 			
 			}
