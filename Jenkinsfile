@@ -330,7 +330,7 @@ pipeline {
             -e AWS_ACCESS_KEY_ID=${AWS_STAGING_USR} \
             -e AWS_SECRET_ACCESS_KEY=${AWS_STAGING_PSW} \
             mendrugory/ekskubectl \
-            kubectl delete po ${K8S_IT_POD} -n staging'  
+            kubectl delete po ${K8S_IT_POD} -n staging || true'  
 		}
 		
 		success {
