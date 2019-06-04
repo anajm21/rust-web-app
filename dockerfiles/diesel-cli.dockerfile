@@ -1,4 +1,4 @@
-FROM rust-base as builder
+FROM 34.245.33.119/rust-base as builder
 
 RUN cargo install diesel_cli \
     --no-default-features --force --features mysql
