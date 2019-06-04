@@ -19,7 +19,7 @@ pipeline {
 	}
 	
 	agent any
-	stages {
+	/*stages {
 		stage('Docker Registry Log in') {
 			steps {
 				sh 'docker login ${REGISTRY_HOST} \
