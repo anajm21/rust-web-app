@@ -73,13 +73,27 @@ pipeline {
 			sh 'sleep 30'
 			}
 		}*/
-		stage('Smoke Test') {
+		/*stage('Smoke Test') {
 			steps {
 				//sh 'curl --fail -I http://0.0.0.0:8888/health'
 				sh 'docker run --rm --net $(echo ${JOB_NAME} | sed "s@/@_@g")_default byrnedo/alpine-curl --fail -I http://web/health'
 				
 			}
+		}*/
+		
+		stage('Smoke Test') {
+			steps {
+            sh 'docker run --rm --net ${DOCKER_NETWORK_NAME} \
+            byrnedo/alpine-curl --fail -I http://${DOCKER_IMAGE}/health'
+			}
 		}
+	}
+	post {
+		always {
+        sh 'docker kill ${DOCKER_IMAGE} ${DB_IMAGE} || true'
+        sh 'docker network rm ${DOCKER_NETWORK_NAME} || true'
+		}
+	}
 		/*stage('Docker Compose Down') {
 			agent{
 			dockerfile{
@@ -92,5 +106,5 @@ pipeline {
         sh 'docker-compose down'
 		}
 		}*/
-	}	 
+		 
 }
