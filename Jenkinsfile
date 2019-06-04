@@ -145,7 +145,7 @@ pipeline {
 			}
 			
 		}
-		/*stage('Connect to K8S Staging') {
+		stage('Connect to K8S Staging') {
 		steps {
         sh 'docker run -v ${HOME}:/root \
             -v /var/run/docker.sock:/var/run/docker.sock \
@@ -155,10 +155,10 @@ pipeline {
             aws eks --region ${AWS_STAGING_DEFAULT_REGION} \
             update-kubeconfig --name ${AWS_STAGING_CLUSTER_NAME}'
 			}
-		}*/
+		}
 		
 		
-		/*stage('Deploy to Staging') {
+		stage('Deploy to Staging') {
 		agent {
         docker {
             image 'mendrugory/ekskubectl'
@@ -235,9 +235,9 @@ pipeline {
 		steps {
 			sh 'diesel migration run'    
 		}                
-		}*/
+		}
 		
-		/*stage('Staging: Integration Test') {
+		stage('Staging: Integration Test') {
 			agent {
 			dockerfile {
 				filename 'dockerfiles/python.dockerfile' 
@@ -252,9 +252,9 @@ pipeline {
 			steps {
 				sh 'python3 integration_tests/integration_test.py' 
 			}                
-		}*/
+		}
 
-		/*stage('Staging: Integration Test - E2E') {
+		stage('Staging: Integration Test - E2E') {
 			agent {
 				dockerfile {
 					filename 'dockerfiles/python.dockerfile' 
@@ -265,9 +265,9 @@ pipeline {
 			steps {
 				sh 'python3 integration_tests/integration_e2e_test.py' 
 			}
-		}*/
+		}
 
-		/*stage('Staging: Integration Test') {
+		stage('Staging: Integration Test') {
 		agent {
         docker {
             image 'mendrugory/ekskubectl'
@@ -280,7 +280,7 @@ pipeline {
             sh "kubectl exec -n staging -it ${K8S_IT_POD} \
                 -- python3 integration_tests/integration_test.py"
 		}
-		}*/
+		}
 		
 		stage('Connect to K8S Production') {
 		steps {
@@ -293,6 +293,29 @@ pipeline {
             update-kubeconfig --name ${AWS_PROD_CLUSTER_NAME}'
 			}
 		}
+		
+		stage('Production: Port Forwarding') {                     
+		steps {
+        script {
+            PODNAME = sh(script: "docker run -v ${HOME}/.kube:/root/.kube \
+                -e AWS_ACCESS_KEY_ID=${AWS_PROD_USR} \
+                -e AWS_SECRET_ACCESS_KEY=${AWS_PROD_PSW} \
+                mendrugory/ekskubectl kubectl get pods -l app=db \
+                -o jsonpath='{.items[0].metadata.name}'", returnStdout: true)
+            echo "The pod is ${PODNAME}"                                        
+        sh(script: "docker run --name ${DOCKER_PF_DB_PROD} \
+            -v ${HOME}/.kube:/root/.kube -p 3305:3306 --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock    \
+            -e AWS_ACCESS_KEY_ID=${AWS_PROD_USR} \
+            -e AWS_SECRET_ACCESS_KEY=${AWS_PROD_PSW} \
+            mendrugory/ekskubectl \
+            kubectl port-forward \
+            --address 0.0.0.0 ${PODNAME} 3306:3306 &")
+        sh 'sleep 10'
+			}
+		}
+		}
+
 		
 		stage('Deploy to Prodution') {
 			agent {
@@ -312,8 +335,7 @@ pipeline {
 		agent {
         dockerfile {
             filename 'dockerfiles/diesel-cli.dockerfile' 
-            args '--entrypoint="" --net=host \
-            -e DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@0.0.0.0:3305/${MYSQL_DATABASE}'    
+            args '--entrypoint="" --net=host -e DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@0.0.0.0:3305/${MYSQL_DATABASE}'    
 			}
 		}
 		steps {
