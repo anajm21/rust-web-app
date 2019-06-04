@@ -3,6 +3,13 @@ pipeline {
 	environment{
 		REGISTRY = 	credentials('REGISTRY')
 		REGISTRY_HOST = '34.245.33.119'
+		DOCKER_NETWORK_NAME = 'docker_network'
+        DOCKER_IMAGE = 'web'
+        DB_IMAGE = 'mysql'
+        MYSQL_ROOT_PASSWORD = 'pass'
+        MYSQL_DATABASE = 'heroes'
+        MYSQL_USER = 'user'
+        MYSQL_PASSWORD = 'password'
 	
 	}
 	
