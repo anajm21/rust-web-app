@@ -19,7 +19,7 @@ pipeline {
 	}
 	
 	agent any
-	/*stages {
+	stages {
 		stage('Docker Registry Log in') {
 			steps {
 				sh 'docker login ${REGISTRY_HOST} \
@@ -53,7 +53,7 @@ pipeline {
 			}
 		}*/
 		
-		/*stage('Docker Up') {
+		stage('Docker Up') {
 			steps {
         sh 'docker network create --driver=bridge \
             --subnet=172.100.1.0/24 --gateway=172.100.1.1 \
@@ -137,7 +137,7 @@ pipeline {
 				
 			}
 			
-		}*/
+		}
 		stage('Connect to K8S Staging') {
 			steps {
 			sh 'docker run -v ${HOME}:/root \
