@@ -76,6 +76,9 @@ pipeline {
             byrnedo/alpine-curl --fail -I http://${DOCKER_IMAGE}/health'
 			}
 		}
+		
+		
+		
 		stage('DB Migration') {
 			agent {
 			dockerfile {
@@ -92,6 +95,23 @@ pipeline {
 		}
 		}
 		
+		stage('Integration Test') {
+		agent {
+        dockerfile {
+            filename 'dockerfiles/python.dockerfile' 
+                args '--net ${DOCKER_NETWORK_NAME} \
+                    -e WEB_HOST=${DOCKER_IMAGE} \
+                    -e DB_HOST=${DB_IMAGE} \
+                    -e DB_DATABASE=${MYSQL_DATABASE} \
+                    -e DB_USER=${MYSQL_USER} \
+                    -e DB_PASSWORD=${MYSQL_PASSWORD}'
+			}
+		}
+		steps {
+			sh 'python3 integration_tests/integration_test.py' 
+		}
+		}
+		
 		
 	}
 	post {
@@ -104,8 +124,8 @@ pipeline {
 			slackSend (
 				channel: "${SLACK_CHANNEL}", 
 				teamDomain: "${SLACK_TEAM_DOMAIN}",
-				tokenCredentialId : 'SLACK_TOKEN_ID',
-				//token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
+				//tokenCredentialId : 'SLACK_TOKEN_ID',
+				token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
 				color: '#00FF00', 
 				message: "SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
 		}
@@ -113,8 +133,8 @@ pipeline {
 			slackSend (
 				channel: "${SLACK_CHANNEL}", 
 				teamDomain: "${SLACK_TEAM_DOMAIN}",
-				tokenCredentialId : 'SLACK_TOKEN_ID',
-				//token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
+				//tokenCredentialId : 'SLACK_TOKEN_ID',
+				token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
 				color: '#FF0000', 
 				message: "FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
 		}
