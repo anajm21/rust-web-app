@@ -18,6 +18,9 @@ pipeline {
 		DOCKER_PF_WEB = 'web-port-forward-smoke-test'
 		DOCKER_PF_DB = 'db-port-forward-test'
 		K8S_IT_POD = 'integration-tests'
+		AWS_PROD = credentials('AWS')
+        AWS_PROD_DEFAULT_REGION = 'eu-west-1'
+        AWS_PROD_CLUSTER_NAME= 'cluster-of-User5'
 	
 	}
 	
@@ -141,7 +144,7 @@ pipeline {
 			}
 			
 		}
-		stage('Connect to K8S Staging') {
+		/*stage('Connect to K8S Staging') {
 		steps {
         sh 'docker run -v ${HOME}:/root \
             -v /var/run/docker.sock:/var/run/docker.sock \
@@ -151,10 +154,10 @@ pipeline {
             aws eks --region ${AWS_STAGING_DEFAULT_REGION} \
             update-kubeconfig --name ${AWS_STAGING_CLUSTER_NAME}'
 			}
-		}
+		}*/
 		
 		
-		stage('Deploy to Staging') {
+		/*stage('Deploy to Staging') {
 		agent {
         docker {
             image 'mendrugory/ekskubectl'
@@ -231,7 +234,7 @@ pipeline {
 		steps {
 			sh 'diesel migration run'    
 		}                
-		}
+		}*/
 		
 		/*stage('Staging: Integration Test') {
 			agent {
@@ -277,6 +280,36 @@ pipeline {
                 -- python3 integration_tests/integration_test.py"
 		}
 		}
+		
+		stage('Connect to K8S Production') {
+		steps {
+			sh 'docker run -v ${HOME}:/root \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -e AWS_ACCESS_KEY_ID=${AWS_PROD_USR} \
+            -e AWS_SECRET_ACCESS_KEY=${AWS_PROD_PSW} \
+            mendrugory/awscli \
+            aws eks --region ${AWS_PROD_DEFAULT_REGION} \
+            update-kubeconfig --name ${AWS_PROD_CLUSTER_NAME}'
+			}
+		}
+		
+		stage('Deploy to Prodution') {
+			agent {
+			docker {
+            image 'mendrugory/ekskubectl'
+            args '-v ${HOME}/.kube:/root/.kube \
+                -e AWS_ACCESS_KEY_ID=${AWS_PROD_USR} \
+                -e AWS_SECRET_ACCESS_KEY=${AWS_PROD_PSW}'
+            }
+			}                        
+			steps {
+				sh 'kubectl apply -f deployment/prod/prod.yaml'
+			}                
+		}
+		
+		
+		
+		
 		
 		
 		
