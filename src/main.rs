@@ -15,7 +15,7 @@ mod hero;
 use hero::Hero;
 
 #[get("/")]
-fh health (_connection: db::Connection) -> & 'static str{
+fn health (_connection: db::Connection) -> & 'static str{
     "up and running"
 }
 
