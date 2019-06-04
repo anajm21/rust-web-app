@@ -14,6 +14,12 @@ mod schema;
 mod hero;
 use hero::Hero;
 
+#[get("/")]
+fh health (_connection: db::Connection) -> & 'static str{
+    "up and running"
+}
+
+
 
 #[get("/")]
 fn read_all(connection: db::Connection) -> Json<Value> {
@@ -39,7 +45,6 @@ fn update(id: i32, hero: Json<Hero>, connection: db::Connection) -> Json<Value> 
         "success": Hero::update(id, update, &connection)
     }))
 }
-
 #[delete("/<id>")]
 fn delete(id: i32, connection: db::Connection) -> Json<Value> {
     Json(json!({
@@ -50,6 +55,7 @@ fn delete(id: i32, connection: db::Connection) -> Json<Value> {
 fn main() {
     rocket::ignite()
         .manage(db::connect())
+        .mount("/health", routes![health])
         .mount("/hero", routes![create, update, delete, read])
         .mount("/heroes", routes![read_all])
         .launch();

@@ -1,4 +1,4 @@
-FROM rust-base as builder
+FROM FROM 34.245.33.119/rust-base as builder
 RUN rustup default nightly-2018-04-04
 WORKDIR /app
 ADD . .
@@ -12,3 +12,4 @@ COPY --from=builder \
          /usr/lib/x86_64-linux-gnu/libmysqlclient* \
          /usr/lib/x86_64-linux-gnu/
 ENTRYPOINT ["/app/./hero-api"]
+

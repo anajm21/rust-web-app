@@ -4,6 +4,7 @@ services:
 
   web:
     build: .
+        dockerfile ./dockerfiles/Dockerfile
     ports:
       - 8888:80
     restart: always
