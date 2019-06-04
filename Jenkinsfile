@@ -151,6 +151,19 @@ pipeline {
 		}
 		
 		
+		stage('Get K8S Pods') {
+			steps {
+			sh 'docker run -v ${HOME}:/root \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -e AWS_ACCESS_KEY_ID=${AWS_STAGING_USR} \
+            -e AWS_SECRET_ACCESS_KEY=${AWS_STAGING_PSW} \
+            mendrugory/awscli \
+            aws eks --region ${AWS_STAGING_DEFAULT_REGION} \
+            update-kubeconfig --name ${AWS_STAGING_CLUSTER_NAME}'
+			}
+		}
+		
+		
 		
 		
 	}
