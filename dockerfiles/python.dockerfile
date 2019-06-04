@@ -1,4 +1,4 @@
-FROM python
+FROM python 
 
 ENV TERM=xterm
 RUN pip install requests
