@@ -32,7 +32,7 @@ pipeline {
 			}
 		
 		
-		}gi
+		}
 		
 		stage('Docker Compose Up') {
 			agent{
