@@ -121,33 +121,22 @@ pipeline {
 		}
 		
 		success {
-        slackSend (
-            channel: "${SLACK_CHANNEL}", 
-            teamDomain: "${SLACK_TEAM_DOMAIN}", 
-            tokenCredentialId: 'SLACK_TOKEN_ID', 
-            color: '#00FF00', 
-            message: "SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
+			slackSend (
+				channel: "${SLACK_CHANNEL}", 
+				teamDomain: "${SLACK_TEAM_DOMAIN}", 
+				tokenCredentialId: 'SLACK_TOKEN_ID', 
+				color: '#00FF00', 
+				message: "SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
 		}
 		failure {
-        slackSend (
-            channel: "${SLACK_CHANNEL}", 
-            teamDomain: "${SLACK_TEAM_DOMAIN}", 
-            tokenCredentialId: 'SLACK_TOKEN_ID', 
-            color: '#FF0000', 
-            message: "FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
+			slackSend (
+				channel: "${SLACK_CHANNEL}", 
+				teamDomain: "${SLACK_TEAM_DOMAIN}", 
+				tokenCredentialId: 'SLACK_TOKEN_ID', 
+				color: '#FF0000', 
+				message: "FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
 		}
-		}
-		/*stage('Docker Compose Down') {
-			agent{
-			dockerfile{
-            filename 'dockerfiles/docker-compose.dockerfile'
-            args "--net host -v /var/run/docker.sock:/var/run/docker.sock"
-            reuseNode true
-			}
-		}
-		steps {
-        sh 'docker-compose down'
-		}
-		}*/
+	}
+
 		 
 }
