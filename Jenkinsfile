@@ -237,7 +237,7 @@ pipeline {
 		}                
 		}
 		
-		stage('Staging: Integration Test') {
+		/*stage('Staging: Integration Test') {
 			agent {
 			dockerfile {
 				filename 'dockerfiles/python.dockerfile' 
@@ -252,7 +252,7 @@ pipeline {
 			steps {
 				sh 'python3 integration_tests/integration_test.py' 
 			}                
-		}
+		}*/
 
 		stage('Staging: Integration Test - E2E') {
 			agent {
@@ -315,6 +315,28 @@ pipeline {
 			}
 		}
 		}
+		
+		stage('Friendly Reminder Authorization before Deploying') {
+		steps {
+        slackSend (channel: "${SLACK_CHANNEL}", 
+            teamDomain: "${SLACK_TEAM_DOMAIN}", 
+            tokenCredentialId: 'SLACK_TOKEN_ID', 
+            color: '#E8EA25', 
+            message: "Job '${JOB_NAME} [${BUILD_NUMBER}]' is waiting for authorization before deploying to production. (${BUILD_URL})")
+			}
+		}
+		
+		stage('Authorization before Deploying') {
+		input {
+			message "Let's Deploy !!!"
+			ok "Yeaaahh !!!"
+		} 
+		steps {
+			echo "Authorization before Deploying"
+		} 
+		}
+		
+		
 
 		
 		stage('Deploy to Prodution') {
