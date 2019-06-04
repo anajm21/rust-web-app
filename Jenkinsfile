@@ -23,7 +23,7 @@ pipeline {
 					-u ${REGISTRY_USR} -p ${REGISTRY_PSW}'
 			}
 		}
-		/*
+		
 		stage ('Unit test'){
 		
 			agent{
@@ -90,7 +90,7 @@ pipeline {
 		steps {
 			sh 'diesel migration run' 
 		}
-		}*/
+		}
 		
 		
 	}
@@ -103,16 +103,18 @@ pipeline {
 		success {
 			slackSend (
 				channel: "${SLACK_CHANNEL}", 
-				teamDomain: "${SLACK_TEAM_DOMAIN}", 
-				token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
+				teamDomain: "${SLACK_TEAM_DOMAIN}",
+				tokenCredentialId : 'SLACK_TOKEN_ID',
+				//token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
 				color: '#00FF00', 
 				message: "SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
 		}
 		failure {
 			slackSend (
 				channel: "${SLACK_CHANNEL}", 
-				teamDomain: "${SLACK_TEAM_DOMAIN}", 
-				token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
+				teamDomain: "${SLACK_TEAM_DOMAIN}",
+				tokenCredentialId : 'SLACK_TOKEN_ID',
+				//token: 'rwBg0I7l5FDdDyFCcCjWXlrZ', 
 				color: '#FF0000', 
 				message: "FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
 		}
