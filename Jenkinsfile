@@ -21,6 +21,7 @@ pipeline {
 		AWS_PROD = credentials('AWS')
         AWS_PROD_DEFAULT_REGION = 'eu-west-1'
         AWS_PROD_CLUSTER_NAME= 'cluster-of-User5'
+		DOCKER_PF_DB_PROD = 'db-port-forward-prod'
 	
 	}
 	
@@ -266,7 +267,7 @@ pipeline {
 			}
 		}*/
 
-		stage('Staging: Integration Test') {
+		/*stage('Staging: Integration Test') {
 		agent {
         docker {
             image 'mendrugory/ekskubectl'
@@ -279,7 +280,7 @@ pipeline {
             sh "kubectl exec -n staging -it ${K8S_IT_POD} \
                 -- python3 integration_tests/integration_test.py"
 		}
-		}
+		}*/
 		
 		stage('Connect to K8S Production') {
 		steps {
@@ -305,6 +306,19 @@ pipeline {
 			steps {
 				sh 'kubectl apply -f deployment/prod/prod.yaml'
 			}                
+		}
+		
+		stage('Produntion: DB Migration') {
+		agent {
+        dockerfile {
+            filename 'dockerfiles/diesel-cli.dockerfile' 
+            args '--entrypoint="" --net=host \
+            -e DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@0.0.0.0:3305/${MYSQL_DATABASE}'    
+			}
+		}
+		steps {
+			sh 'diesel migration run'
+		}
 		}
 		
 		
