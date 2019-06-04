@@ -16,8 +16,10 @@ use hero::Hero;
 
 #[get("/")]
 fn health (_connection: db::Connection) -> & 'static str{
-    "up and running"
+    "perfectooo"
 }
+
+
 
 
 

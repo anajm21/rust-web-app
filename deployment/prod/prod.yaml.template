@@ -67,7 +67,7 @@ spec:
       imagePullSecrets:
       - name: private-registry
       containers:
-      - image: 34.245.33.119/web:latest
+      - image: 34.245.33.119/web:{{VERSION}}
         name: web
         env:
         - name: DATABASE_URL

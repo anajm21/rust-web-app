@@ -54,11 +54,11 @@ pipeline {
 		}*/
 		
 		
-		/*stage('Docker Build') {
+		stage('Docker Build') {
 			steps {
 				sh 'docker build -t ${DOCKER_IMAGE} -f dockerfiles/Dockerfile .'
 			}
-		}*/
+		}
 		
 		stage('Docker Up') {
 			steps {
@@ -349,6 +349,7 @@ pipeline {
             }
 			}                        
 			steps {
+				sh "sed 's@{{VERSION}}@$BUILD_NUMBER@g' deployment/prod/prod.yaml.template > deployment/prod/prod.yaml"
 				sh 'kubectl apply -f deployment/prod/prod.yaml'
 			}                
 		}
